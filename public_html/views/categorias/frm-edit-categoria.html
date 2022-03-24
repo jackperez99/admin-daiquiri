@@ -1,0 +1,98 @@
+<div id="mdlEditCategoria" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Editar Categoria</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span arial-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="formEditCategoria">
+
+            <input type="hidden" name="txtId" id="txtId">
+
+            <div class="card-body">
+              <div class="form-group">
+                <label for="txtCodigo">Codigo</label>
+                <input type="text" name="txtCodigo" class="form-control" id="txtCodigo" placeholder="Ingresar código">
+              </div>
+              <div class="form-group">
+                <label for="txtNombre">Nombre</label>
+                <input type="text" name="txtNombre" class="form-control" id="txtNombre" placeholder="Ingresar Nombre">
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancelar</button>
+            </div>
+          </form>
+
+
+            
+        </div> 
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+
+    function closeModal()
+    {
+      $('#mdlEditCategoria').modal("hide");
+    }
+
+
+    $(function () {
+      $.validator.setDefaults({
+        submitHandler: function () {
+          
+            $.ajax({
+                method: "PUT",
+                url:"http://daiquiriclub.com/api/categorias",
+                data: { id: $("#txtId").val(), codigo: $("#txtCodigo").val(), nombre: $("#txtNombre").val()}
+            })
+            .done(function( msg){
+                $("#txtCodigo").val("");
+                $("#txtNombre").val("");
+
+                $('#mdlEditCategoria').modal("hide");
+                updateDataTable();
+            });
+
+
+        }
+      });
+      $('#formEditCategoria').validate({
+        rules: {
+          txtCodigo: {
+            required: true
+          },
+          txtNombre: {
+            required: true,
+          }
+        },
+        messages: {
+          txtCodigo: {
+            required: "Ingrese el valor del código",
+          },
+          txtNombre: {
+            required: "Ingrese el nombre",
+          } 
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+          error.addClass('invalid-feedback');
+          element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+          $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+          $(element).removeClass('is-invalid');
+        }
+      });
+    });
+    </script>
